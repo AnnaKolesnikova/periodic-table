@@ -1,0 +1,7 @@
+@if(loading) {
+<div>Loading...</div>
+} @if(data) { @for (element of data; track element.position){
+<ul>
+  <li>{{ element.name }}</li>
+</ul>
+} }
