@@ -1,0 +1,39 @@
+<h5 mat-dialog-title>Edit Element: {{ data.element.name }}</h5>
+<div mat-dialog-content class="fields-container">
+  <mat-form-field appearance="fill">
+    <mat-label>Position</mat-label>
+    <input
+      matInput
+      [ngModel]="data.element.position"
+      (ngModelChange)="onModelChange($event, data.element, 'position')"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input
+      matInput
+      [ngModel]="data.element.name"
+      (ngModelChange)="onModelChange($event, data.element, 'name')"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Weight</mat-label>
+    <input
+      matInput
+      [ngModel]="data.element.weight"
+      (ngModelChange)="onModelChange($event, data.element, 'weight')"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Symbol</mat-label>
+    <input
+      matInput
+      [ngModel]="data.element.symbol"
+      (ngModelChange)="onModelChange($event, data.element, 'symbol')"
+    />
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSave()" cdkFocusInitial>Save</button>
+</div>

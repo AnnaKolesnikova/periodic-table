@@ -3,4 +3,5 @@ export interface PeriodicElement {
   name: string;
   weight: number;
   symbol: string;
+  isEdit?: boolean;
 }
