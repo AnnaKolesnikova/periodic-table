@@ -12,22 +12,16 @@ body {
 .custom-dialog {
   margin: 0 auto;
   padding: 20px;
-  max-width: "80vw";
-  max-height: "80vh";
   background-color: #faf9fd;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 
   h5 {
-    padding: 0 10px;
+    padding: 0 15px;
   }
 
   .fields-container {
     display: flex;
-    justify-content: center;
-  }
-
-  mat-form-field {
-    margin-right: 10px;
+    flex-direction: column;
   }
 }
