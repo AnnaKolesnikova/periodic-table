@@ -1,15 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { PeriodicElement } from '../../shared/models/periodicElement.model';
+import { MaterialModules } from '../../shared/modules/material.module';
 
 @Component({
   selector: 'app-dialog',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule],
+  imports: [...MaterialModules, FormsModule],
   templateUrl: './dialog.component.html',
 })
 export class DialogComponent {

@@ -1,34 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { MaterialModules } from '../../shared/modules/material.module';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { DataService } from '../../services/data.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { PeriodicElement } from '../../shared/models/periodicElement.model';
 import { FormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { RxState } from '@rx-angular/state';
+import { CommonModule } from '@angular/common';
 
+interface TableState {
+  data: PeriodicElement[];
+  loading: boolean;
+}
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [
-    MatTableModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    FormsModule,
-  ],
+  imports: [...MaterialModules, FormsModule, CommonModule],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
+  providers: [RxState],
 })
 export class TableComponent implements OnInit {
   displayedColumns: string[] = [
@@ -40,24 +33,31 @@ export class TableComponent implements OnInit {
   ];
   dataSource = new MatTableDataSource<PeriodicElement>([]);
   filterSubject = new Subject<string>();
-  loading: boolean = true;
+  isLoading$ = this.state.select('loading');
 
-  constructor(private dataService: DataService, public dialog: MatDialog) {}
-
-  ngOnInit(): void {
-    this.dataService.fetchData().subscribe({
-      next: (response) => {
-        this.dataSource.data = response;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading data', error);
-        this.loading = false;
-      },
+  constructor(
+    private dataService: DataService,
+    public dialog: MatDialog,
+    private state: RxState<TableState>
+  ) {
+    this.state.set({
+      data: [],
+      loading: true,
     });
 
+    this.state.select('data').subscribe((data) => {
+      this.dataSource.data = data;
+    });
+  }
+
+  ngOnInit(): void {
+    this.state.connect(this.dataService.fetchData(), (_state, data) => ({
+      data,
+      loading: false,
+    }));
+
     this.filterSubject.pipe(debounceTime(2000)).subscribe((filterValue) => {
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+      this.applyFilter(filterValue);
     });
   }
 
@@ -69,19 +69,26 @@ export class TableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const index = this.dataSource.data.findIndex(
-          (item) => item.name === element.name
-        );
-        if (index !== -1) {
-          this.dataSource.data[index] = result;
-          this.dataSource._updateChangeSubscription();
-        }
+        this.state.set({
+          data: this.dataSource.data.map((item) =>
+            item.name === element.name ? result : item
+          ),
+        });
       }
     });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
+  onFilterChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filterValue = inputElement?.value || '';
     this.filterSubject.next(filterValue);
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }
