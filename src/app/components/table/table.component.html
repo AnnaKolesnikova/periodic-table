@@ -1,18 +1,16 @@
-@if(loading) {
+@if (isLoading$ | async; as isLoading){
 <div class="loading">
   <mat-spinner></mat-spinner>
 </div>
-
-}
+} @else {
 <mat-form-field>
   <mat-label>Filter</mat-label>
   <input
     matInput
-    (keyup)="applyFilter($event)"
+    (keyup)="onFilterChange($event)"
     placeholder="Enter text to filter"
   />
 </mat-form-field>
-
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="position">
     <th mat-header-cell *matHeaderCellDef>No.</th>
@@ -46,3 +44,4 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+}
