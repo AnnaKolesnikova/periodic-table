@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MaterialModules } from '../../shared/modules/material.module';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { DataService } from '../../services/data.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { PeriodicElement } from '../../shared/models/periodicElement.model';
 import { FormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -17,16 +12,7 @@ import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [
-    MatTableModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    FormsModule,
-  ],
+  imports: [...MaterialModules, FormsModule],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
